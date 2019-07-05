@@ -13,7 +13,7 @@ showCalendar(currentMonth, currentYear);
 function next() {
     currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
     currentMonth = (currentMonth + 1) % 12;
-    showCalendar(currentMonth, currentYear);
+    showCalendar(currentMonth, currentYear, true);
 }
 
 function previous() {
@@ -28,7 +28,7 @@ function jump() {
     showCalendar(currentMonth, currentYear);
 }
 
-function showCalendar(month, year) {
+function showCalendar(month, year, isNext) {
 
     let firstDay = (new Date(year, month)).getDay();
     let daysInMonth = 32 - new Date(year, month, 32).getDate();
@@ -73,13 +73,12 @@ function showCalendar(month, year) {
                 dateDisplay.appendChild(cellText);
 
 
-
-
                 cell.appendChild(dateDisplay);
 
                 if (j == 0 || j == 6) {
                     cell.classList.add("bg-danger")
                 } else {
+
                     let data_month = document.createAttribute('data-month');
                     data_month.value = month;
                     let data_year = document.createAttribute('data-year');
@@ -90,44 +89,46 @@ function showCalendar(month, year) {
                     cell.setAttributeNode(data_month);
                     cell.setAttributeNode(data_year);
 
+                    // no select select date if less than today
+                    if ((date >= today.getDate() && year === today.getFullYear() && month === today.getMonth()) || (isNext && year >= today.getFullYear() && month >= today.getMonth())) {
 
 
-                    let morningChkbox = document.createElement("span");
-                    let checkBoxM = document.createElement("input");
-                    checkBoxM.type = "checkbox";
-                    checkBoxM.value = "M";
-                    let indexChk = document.createAttribute('id');
-                    indexChk.value = indexChkCount++;
-                    checkBoxM.setAttributeNode(indexChk);
-                    //"<input type='checkbox' value='M' style='display:inline'/>";
-                    morningChkbox.appendChild(checkBoxM);
+                        let morningChkbox = document.createElement("span");
+                        let checkBoxM = document.createElement("input");
+                        checkBoxM.type = "checkbox";
+                        checkBoxM.value = "M";
+                        let indexChk = document.createAttribute('id');
+                        indexChk.value = indexChkCount++;
+                        checkBoxM.setAttributeNode(indexChk);
 
-                    let afternoonChkbox = document.createElement("span");
-                    let checkBoxA = document.createElement("input");
-                    checkBoxA.type = "checkbox";
-                    checkBoxA.value = "A";
-                    let indexChkA = document.createAttribute('id');
-                    indexChkA.value = indexChkCount++;
-                    checkBoxA.setAttributeNode(indexChkA);
-                    // "<input type='checkbox' value='A' style='display:inline'/>";
-                    afternoonChkbox.appendChild(checkBoxA);
+                        let afternoonChkbox = document.createElement("span");
+                        let checkBoxA = document.createElement("input");
+                        checkBoxA.type = "checkbox";
+                        checkBoxA.value = "A";
+                        let indexChkA = document.createAttribute('id');
+                        indexChkA.value = indexChkCount++;
+                        checkBoxA.setAttributeNode(indexChkA);
 
-                    cell.appendChild(morningChkbox);
-                    cell.appendChild(afternoonChkbox);
+                        morningChkbox.appendChild(checkBoxM);
+                        afternoonChkbox.appendChild(checkBoxA);
+                        cell.appendChild(morningChkbox);
+                        cell.appendChild(afternoonChkbox);
+                    }
                 }
-
-
                 row.appendChild(cell);
                 date++;
             }
 
 
         }
-
         tbl.appendChild(row); // appending each row into calendar body.
     }
 
 }
+
+$(document).on('click', '#date', function(){
+    $('.card').style = 'display:block'
+})
 
 function countChkBoxChecked() {
     return $("[type='checkbox']:checked").length;
@@ -144,12 +145,18 @@ function resetCheckboxes() {
     $("input:checkbox").prop('checked', false);
 }
 
+function enableCheckbox() {
+    $('input:checkbox').attr('disabled', false);
+}
+
 function resetVariables() {
     start = undefined;
     last = undefined;
     tmpLast = undefined;
     fromDate = '';
     toDate = '';
+    enableCheckbox();
+    clearDateInput();
 }
 
 function getChkBoxClass(e) {
@@ -171,7 +178,18 @@ function getTdDataVal(e, time) {
     return $(e).parents('td').data(time);
 }
 
-$('input:checkbox').change(function() {
+function disableCheckbox(start, last) {
+    for (let i = start; i < last; i++) {
+        $('#' + i).attr('disabled', true);
+    }
+}
+
+function clearDateInput() {
+    $('#date').val('');
+}
+
+$(document).on('change', 'input:checkbox', function () {
+
     if (countChkBoxChecked() === 1) {
         start = getChkBoxClass(this);
         // console.log($(this).parents('td').data('date'));
@@ -183,38 +201,49 @@ $('input:checkbox').change(function() {
             separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
         $('#date').val(fromDate + ' - ' + fromDate);
         console.log(fromDate)
+
+        if (start > 1) {
+            disableCheckbox(1, start);
+        }
+
+
     } else if (countChkBoxChecked() > 1) {
         last = getChkBoxClass(this)
 
-        if (
-            (tmpLast != undefined) &&
-            (tmpLast > last) &&
-            (last > start)) {
+        // check if second select is not less than the first
+        if (last > start) {
+            if (
+                (tmpLast != undefined) &&
+                (tmpLast > last) &&
+                (last > start)) {
 
-            checkBoxFrom(last, tmpLast, false);
+                checkBoxFrom(last, tmpLast, false);
 
 
-            toDate = getTdDataVal(this, 'date') +
-                separator + getTdDataVal(this, 'month') +
-                separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
-            console.log(fromDate + ' - ' + toDate)
-            $('#date').val(fromDate + ' - ' + toDate);
-            tmpLast = last;
+                toDate = getTdDataVal(this, 'date') +
+                    separator + getTdDataVal(this, 'month') +
+                    separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
+                console.log(fromDate + ' - ' + toDate)
+                $('#date').val(fromDate + ' - ' + toDate);
+                tmpLast = last;
 
-        } else if (last > start) {
-            tmpLast = last;
-            checkBoxFrom(start, last, true);
+            } else if (last > start) {
+                tmpLast = last;
+                checkBoxFrom(start, last, true);
 
-            toDate = getTdDataVal(this, 'date') +
-                separator + getTdDataVal(this, 'month') +
-                separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
-            $('#date').val(fromDate + ' - ' + toDate);
+                toDate = getTdDataVal(this, 'date') +
+                    separator + getTdDataVal(this, 'month') +
+                    separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
+                $('#date').val(fromDate + ' - ' + toDate);
 
-            console.log(fromDate + ' - ' + toDate)
+                console.log(fromDate + ' - ' + toDate)
+            }
         }
         // console.log('Total checked : ' + countChkBoxChecked())
     } else {
         resetVariables();
+        enableCheckbox();
+        clearDateInput();
     }
 
     function checkBoxFrom(start, last, status) {
