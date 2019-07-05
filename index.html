@@ -1,47 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Calendar</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
 </head>
+
 <body>
-<div class="container col-sm-4 col-md-7 col-lg-4 mt-5">
-    <div class="card">
-        <h3 class="card-header" id="monthAndYear"></h3>
-        <table class="table table-bordered table-responsive-sm" id="calendar">
-            <thead>
-            <tr>
-                <th>Sun</th>
-                <th>Mon</th>
-                <th>Tue</th>
-                <th>Wed</th>
-                <th>Thu</th>
-                <th>Fri</th>
-                <th>Sat</th>
-            </tr>
-            </thead>
+    <div class="container col-sm-4 col-md-7 col-lg-4 mt-5">
+        <input class="form-control" type="text" name="date" id="date">
 
-            <tbody id="calendar-body">
+        <div class="card">
+            <h3 class="card-header" id="monthAndYear"></h3>
+            <table class="table table-bordered table-responsive-sm" id="calendar">
+                <thead>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
 
-            </tbody>
-        </table>
+                <tbody id="calendar-body">
 
-        <div class="form-inline">
+                </tbody>
+            </table>
 
-            <button class="btn btn-outline-primary col-sm-6" id="previous" onclick="previous()">Previous</button>
+            <div class="form-inline">
 
-            <button class="btn btn-outline-primary col-sm-6" id="next" onclick="next()">Next</button>
-        </div>
-        <br/>
-        <form class="form-inline" style="display:none;">
-            <label class="lead mr-2 ml-2" for="month">Jump To: </label>
-            <select class="form-control col-sm-4" name="month" id="month" onchange="jump()">
+                <button class="btn btn-outline-primary col-sm-6" id="previous" onclick="previous()">Previous</button>
+
+                <button class="btn btn-outline-primary col-sm-6" id="next" onclick="next()">Next</button>
+            </div>
+            <br/>
+            <button id="btn_clear" onclick="clearChecked()">Clear</button>
+            <form class="form-inline" style="display:none;">
+                <label class="lead mr-2 ml-2" for="month">Jump To: </label>
+                <select class="form-control col-sm-4" name="month" id="month" onchange="jump()">
                 <option value=0>Jan</option>
                 <option value=1>Feb</option>
                 <option value=2>Mar</option>
@@ -57,7 +61,7 @@
             </select>
 
 
-            <label for="year"></label><select class="form-control col-sm-4" name="year" id="year" onchange="jump()">
+                <label for="year"></label><select class="form-control col-sm-4" name="year" id="year" onchange="jump()">
             <option value=2019>2019</option>
             <option value=2020>2020</option>
             <option value=2021>2021</option>
@@ -71,71 +75,23 @@
             <option value=2029>2029</option>
             <option value=2030>2030</option>
         </select></form>
+        </div>
     </div>
-</div>
 
 
 
 
-<table class="table table-bordered table-condensed table-striped" id="table4" data-toggle="checkboxes" data-range="true">
-    <thead>
-        <tr>
-            <th>#table4</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><label><input type="checkbox"> Row 1</label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox"> Row 2 <small>(check me)</small></label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox"> Row 3</label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox"> Row 4</label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox" disabled="disabled"> Row 5</label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox"> Row 6</label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox"> Row 7 <small>(now pressing SHIFT and check </small></label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox"> Row 8</label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox"> Row 9</label></td>
-        </tr>
-        <tr>
-            <td><label><input type="checkbox"> Row 10</label></td>
-        </tr>
-    </tbody>
-</table>
+    <!-- Optional JavaScript for bootstrap -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="jquery.checkboxes.js"></script>
 
-
-
-
-<!--<button name="jump" onclick="jump()">Go</button>-->
-<script src="scripts.js"></script>
-
-<!-- Optional JavaScript for bootstrap -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
-        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
-        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
-        crossorigin="anonymous"></script>
-<script src="jquery.checkboxes.js"></script>
-<script src="custom.script.js"></script>
+    <!--<button name="jump" onclick="jump()">Go</button>-->
+    <script src="scripts.js"></script>
+    <script src="custom.script.js"></script>
 
 </body>
+
 </html>

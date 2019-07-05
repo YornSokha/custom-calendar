@@ -7,11 +7,11 @@
      */
     class Checkboxes {
 
-        /**
-         * Create a new checkbox context.
-         *
-         * @param {Object} context DOM context.
-         */
+        // /**
+        //  * Create a new checkbox context.
+        //  *
+        //  * @param {Object} context DOM context.
+        //  */
         constructor(context) {
             this.$context = context;
         }
@@ -116,7 +116,7 @@
      *
      * @return {Object} jQuery object.
      */
-    $.fn.checkboxes = function (method) {
+    $.fn.checkboxes = function(method) {
         // Get extra arguments as method arguments.
         let args = Array.prototype.slice.call(arguments, 1);
 
@@ -144,7 +144,7 @@
     /**
      * No conflictive Checkboxes jQuery plugin.
      */
-    $.fn.checkboxes.noConflict = function () {
+    $.fn.checkboxes.noConflict = function() {
         $.fn.checkboxes = old;
         return this;
     };
@@ -174,7 +174,7 @@
      * Handle data-api DOM ready.
      */
     var dataApiDomReadyHandler = () => {
-        $('[data-toggle^=checkboxes]').each(function () {
+        $('[data-toggle^=checkboxes]').each(function() {
             let el = $(this);
             let actions = el.data();
             delete actions.toggle;
