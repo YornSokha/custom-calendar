@@ -126,9 +126,25 @@ function showCalendar(month, year, isNext) {
 
 }
 
-$(document).on('click', '#date', function(){
-    $('.card').style = 'display:block'
+$(document).on('click', '#datetime', function() {
+    $('#datepicker').css({ 'position': 'absolute', 'top': '37px', 'left': '46.6406px', 'z-index': '1', 'display': 'block' });
 })
+
+
+
+// $(document).on('focus blur', '#date', toggleFocus);
+
+// function toggleFocus(e) {
+//     console.log(e.type)
+
+//     if (e.type == 'focusin') {
+//         $('#datepicker').css({ 'position': 'absolute', 'top': '37px', 'left': '46.6406px', 'z-index': '1', 'display': 'block' });
+
+//     } else {
+//         $('#datepicker').css({ 'display': 'none' });
+
+//     }
+// }
 
 function countChkBoxChecked() {
     return $("[type='checkbox']:checked").length;
@@ -188,7 +204,7 @@ function clearDateInput() {
     $('#date').val('');
 }
 
-$(document).on('change', 'input:checkbox', function () {
+$(document).on('change', 'input:checkbox', function() {
 
     if (countChkBoxChecked() === 1) {
         start = getChkBoxClass(this);
@@ -196,6 +212,7 @@ $(document).on('change', 'input:checkbox', function () {
         // console.log($(this).parents('td').data('month'));
         // console.log($(this).parents('td').data('year'));
         // console.log($(this).val())
+        console.log(start);
         fromDate = getTdDataVal(this, 'date') +
             separator + getTdDataVal(this, 'month') +
             separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
@@ -209,36 +226,40 @@ $(document).on('change', 'input:checkbox', function () {
 
     } else if (countChkBoxChecked() > 1) {
         last = getChkBoxClass(this)
+        console.log(last)
+            // check if second select is not less than the first
 
-        // check if second select is not less than the first
-        if (last > start) {
-            if (
-                (tmpLast != undefined) &&
-                (tmpLast > last) &&
-                (last > start)) {
+        if (
+            (tmpLast != undefined) &&
+            (tmpLast > last) &&
+            (last > start)) {
 
-                checkBoxFrom(last, tmpLast, false);
+            checkBoxFrom(last, tmpLast, false);
 
 
-                toDate = getTdDataVal(this, 'date') +
-                    separator + getTdDataVal(this, 'month') +
-                    separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
-                console.log(fromDate + ' - ' + toDate)
-                $('#date').val(fromDate + ' - ' + toDate);
-                tmpLast = last;
+            toDate = ($(this).val() == 'M' ? getTdDataVal(this, 'date') - 1 : getTdDataVal(this, 'date')) +
+                separator + getTdDataVal(this, 'month') +
+                separator + getTdDataVal(this, 'year') + ' ' + ($(this).val() == 'M' ? 'A' : 'M');
+            $('#date').val(fromDate + ' - ' + toDate);
+            tmpLast = last;
 
-            } else if (last > start) {
-                tmpLast = last;
-                checkBoxFrom(start, last, true);
+        } else if (last === tmpLast) {
+            console.log($(this))
+        } else {
+            tmpLast = last;
+            checkBoxFrom(start, last, true);
+            toDate = getTdDataVal(this, 'date') +
+                separator + getTdDataVal(this, 'month') +
+                separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
+            $('#date').val(fromDate + ' - ' + toDate);
 
-                toDate = getTdDataVal(this, 'date') +
-                    separator + getTdDataVal(this, 'month') +
-                    separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
-                $('#date').val(fromDate + ' - ' + toDate);
-
-                console.log(fromDate + ' - ' + toDate)
-            }
         }
+
+
+        if (last === start) {
+            clearChecked();
+        }
+
         // console.log('Total checked : ' + countChkBoxChecked())
     } else {
         resetVariables();
