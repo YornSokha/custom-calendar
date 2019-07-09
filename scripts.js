@@ -126,7 +126,7 @@ function showCalendar(month, year, isNext) {
 
 }
 
-$(document).on('click', '#datetime', function() {
+$(document).on('focusin', '#date', function() {
     $('#datepicker').css({ 'position': 'absolute', 'top': '37px', 'left': '46.6406px', 'z-index': '1', 'display': 'block' });
 })
 
@@ -153,7 +153,7 @@ function countChkBoxChecked() {
 function clearChecked() {
     resetVariables();
     resetCheckboxes();
-
+    clearDateInput();
 }
 
 
@@ -206,7 +206,6 @@ function clearDateInput() {
 
 function getDateFormatted(e, d, m, y, dateDecreaseStatus) {
 
-
     let rDate;
     let rTime;
 
@@ -222,76 +221,71 @@ function getDateFormatted(e, d, m, y, dateDecreaseStatus) {
         separator + getTdDataVal(e, y) + ' ' + rTime);
 }
 
+function closeDatePicker() {
+    $('#datepicker').css('display', 'none');
+}
+
 $(document).on('change', 'input:checkbox', function() {
-
+    // if first check    
     if (countChkBoxChecked() === 1) {
-        start = getChkBoxClass(this);
-        fromDate = getDateFormatted(this, 'date', 'month', 'year', false);
-        //  getTdDataVal(this, 'date') +
-        //     separator + getTdDataVal(this, 'month') +
-        //     separator + getTdDataVal(this, 'year') + ' ' + $(this).val();
 
-        console.log(fromDate)
-        $('#date').val(fromDate + ' - ' + fromDate);
-
-        if (start > 1) {
-            disableCheckbox(1, start);
+        if ($(this).prop('checked')) {
+            start = getChkBoxClass(this);
+            fromDate = getDateFormatted(this, 'date', 'month', 'year', false);
+            toDate = fromDate;
+            // to disable previous checkbox
+            if (start > 1 && (last != start + 1)) {
+                disableCheckbox(1, start);
+            }
+        } else {
+            //if uncheck first checkbox or left checkbox is disabled            
+            if (getChkBoxClass(this) === 1 || !$('#' + (getChkBoxClass(this) - 1)).prop('checked')) {
+                clearChecked();
+            } else {
+                toDate = getDateFormatted(this, 'date', 'month', 'year', true);
+            }
         }
 
+        $('#date').val(fromDate + ' - ' + toDate);
 
     } else if (countChkBoxChecked() > 1) {
         last = getChkBoxClass(this)
-        console.log(last)
             // check if second select is not less than the first
-
         if (
             (tmpLast != undefined) &&
-            (tmpLast > last) &&
-            (last > start)) {
+            (tmpLast > last)) {
 
             checkBoxFrom(last, tmpLast, false);
-
-
             toDate = getDateFormatted(this, 'date', 'month', 'year', true);
-            //  ($(this).val() == 'M' ? getTdDataVal(this, 'date') - 1 : getTdDataVal(this, 'date')) +
-            //     separator + getTdDataVal(this, 'month') +
-            //     separator + getTdDataVal(this, 'year') + ' ' + ($(this).val() == 'M' ? 'A' : 'M');
-            $('#date').val(fromDate + ' - ' + toDate);
             tmpLast = last;
 
-        } else if (last === tmpLast) {
+        } else if (last === tmpLast) { // if user check or uncheck on the same last checkbox
             if ($(this).prop('checked')) {
                 toDate = getDateFormatted(this, 'date', 'month', 'year', false);
-                $('#date').val(fromDate + ' - ' + toDate);
             } else {
                 toDate = getDateFormatted(this, 'date', 'month', 'year', true);
-                // ($(this).val() == 'M' ? getTdDataVal(this, 'date') - 1 : getTdDataVal(this, 'date')) +
-                //     separator + getTdDataVal(this, 'month') +
-                //     separator + getTdDataVal(this, 'year') + ' ' + ($(this).val() == 'M' ? 'A' : 'M');
-                $('#date').val(fromDate + ' - ' + toDate);
             }
         } else {
             tmpLast = last;
             checkBoxFrom(start, last, true);
             toDate = getDateFormatted(this, 'date', 'month', 'year', false);
-            $('#date').val(fromDate + ' - ' + toDate);
-
         }
 
         if (last === start) {
             clearChecked();
         }
+        $('#date').val(fromDate + ' - ' + toDate);
 
         // console.log('Total checked : ' + countChkBoxChecked())
     } else {
-        resetVariables();
-        enableCheckbox();
-        clearDateInput();
+        clearChecked();
     }
+
 
     function checkBoxFrom(start, last, status) {
         for (var i = start; i <= last; i++) {
             $('#' + i).prop('checked', status);
         }
     }
+
 })
